@@ -1,0 +1,1206 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>银杏大道 · 十二个月的记忆</title>
+<style>
+:root{
+  color-scheme: light dark;
+  --bg:#f6ecd6;
+  --panel:rgba(255,249,236,.90);
+  --panel-strong:rgba(255,249,236,.97);
+  --surface:rgba(120,90,40,.06);
+  --overlay:rgba(246,226,186,.72);
+  --listen:rgba(120,80,20,.34);
+  --text:#3b2a14;
+  --text-2:#7a6142;
+  --line:rgba(120,90,40,.22);
+  --accent:#d99a12;
+  --accent-2:#b5651d;
+  --on-accent:#ffffff;
+  --track:rgba(120,90,40,.18);
+  --shadow:rgba(60,40,10,.22);
+  --white:rgba(255,255,255,.9);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#232323; --panel:rgba(35,31,26,.90); --panel-strong:rgba(35,31,26,.97);
+    --surface:rgba(255,255,255,.06); --overlay:rgba(20,16,10,.74); --listen:rgba(0,0,0,.45);
+    --text:#f3e7cf; --text-2:#bfa984; --line:rgba(240,200,120,.18);
+    --accent:#f0b429; --accent-2:#e08a3c; --on-accent:#2a1c06;
+    --track:rgba(240,200,120,.16); --shadow:rgba(0,0,0,.45); --white:rgba(255,255,255,.85);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#232323; --panel:rgba(35,31,26,.90); --panel-strong:rgba(35,31,26,.97);
+  --surface:rgba(255,255,255,.06); --overlay:rgba(20,16,10,.74); --listen:rgba(0,0,0,.45);
+  --text:#f3e7cf; --text-2:#bfa984; --line:rgba(240,200,120,.18);
+  --accent:#f0b429; --accent-2:#e08a3c; --on-accent:#2a1c06;
+  --track:rgba(240,200,120,.16); --shadow:rgba(0,0,0,.45); --white:rgba(255,255,255,.85);
+}
+:root[data-theme="light"]{
+  --bg:#f6ecd6; --panel:rgba(255,249,236,.90); --panel-strong:rgba(255,249,236,.97);
+  --surface:rgba(120,90,40,.06); --overlay:rgba(246,226,186,.72); --listen:rgba(120,80,20,.34);
+  --text:#3b2a14; --text-2:#7a6142; --line:rgba(120,90,40,.22);
+  --accent:#d99a12; --accent-2:#b5651d; --on-accent:#ffffff;
+  --track:rgba(120,90,40,.18); --shadow:rgba(60,40,10,.22); --white:rgba(255,255,255,.9);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-user-select:none;user-select:none;touch-action:none}
+canvas{display:block}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--panel-strong);color:var(--text);
+  border-radius:999px;padding:8px 14px;transition:border-color .2s,background .2s}
+button:hover{border-color:var(--accent)}
+button:active{transform:scale(.97)}
+
+/* ---------- 开始界面 ---------- */
+#start{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--overlay);
+  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);z-index:20;transition:opacity .6s}
+#start.hide{opacity:0;pointer-events:none}
+.start-box{max-width:470px;width:calc(100% - 40px);text-align:center;padding:26px 24px;border-radius:20px;
+  background:var(--panel);border:1px solid var(--line);box-shadow:0 20px 60px var(--shadow);max-height:calc(100% - 40px);overflow:auto}
+.start-box .leaf{font-size:42px;animation:sway 3.4s ease-in-out infinite;display:inline-block}
+.start-box h1{margin:4px 0 4px;font-size:25px;letter-spacing:3px}
+.start-box .sub{color:var(--text-2);margin:0 0 16px;font-size:13.5px;line-height:1.6}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:7px 12px;text-align:left;font-size:12.5px;color:var(--text-2);
+  margin:0 auto 18px;max-width:350px}
+.keys b{color:var(--text);font-weight:600;white-space:nowrap}
+#go{background:var(--accent);color:var(--on-accent);border:none;padding:12px 34px;font-size:16px;font-weight:600;
+  box-shadow:0 6px 18px var(--shadow)}
+@keyframes sway{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+
+#cardPhoto{height:196px;background-size:cover;background-position:center;background-color:var(--track);position:relative;overflow:hidden}
+.art-label{position:absolute;right:12px;top:10px;padding:4px 8px;border-radius:999px;background:var(--panel);color:var(--text-2);font-size:10px;letter-spacing:1px}
+#finaleCaption{position:fixed;left:50%;bottom:26px;transform:translate(-50%,18px);opacity:0;transition:opacity 1.2s,transform 1.2s;z-index:5;text-align:center;color:var(--text);text-shadow:0 2px 14px var(--shadow);pointer-events:none}
+#finaleCaption.show{opacity:1;transform:translate(-50%,0)}
+#finaleCaption span,#finaleCaption small{display:block;color:var(--text-2);font-size:12px;letter-spacing:2px}
+#finaleCaption b{display:block;font-size:26px;letter-spacing:8px;margin:5px 0;color:var(--accent)}
+
+.auto-row{display:none;align-items:center;gap:10px;margin-top:12px}
+.auto-row.show{display:flex}
+#btnNext{background:var(--accent);color:var(--on-accent);border:none;font-weight:600;padding:8px 16px}
+#autoCount{font-size:11.5px;color:var(--text-2)}
+#btnAuto.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+/* ---------- 顶部进度 ---------- */
+#hud{position:fixed;top:12px;left:50%;transform:translateX(-50%);width:min(540px,calc(100% - 130px));z-index:5;
+  padding:9px 14px 7px;border-radius:14px;background:var(--panel);border:1px solid var(--line);
+  box-shadow:0 6px 20px var(--shadow);opacity:0;transition:opacity .6s}
+#hud.show{opacity:1}
+.hud-row{display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-2);margin-bottom:7px}
+.hud-row b{color:var(--text)}
+#track{position:relative;height:6px;border-radius:6px;background:var(--track)}
+#fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:6px;background:var(--accent);transition:width .15s}
+.dot{position:absolute;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;
+  background:var(--panel-strong);border:2px solid var(--accent-2);transition:all .3s}
+.dot.on{background:var(--accent-2);transform:scale(1.25)}
+
+/* ---------- 记忆卡片 ---------- */
+#card{position:fixed;right:18px;bottom:18px;width:min(350px,calc(100% - 36px));z-index:6;border-radius:16px;overflow:hidden;
+  background:var(--panel-strong);border:1px solid var(--line);box-shadow:0 16px 40px var(--shadow);
+  opacity:0;transform:translateY(20px) scale(.97);pointer-events:none;transition:opacity .45s,transform .45s}
+#card.show{opacity:1;transform:none;pointer-events:auto}
+#cardPhoto{position:relative;height:196px;background-size:cover;background-position:center;background-color:var(--track);
+  display:flex;align-items:center;justify-content:center}
+#photoEmpty{font-size:12px;color:var(--text-2);text-align:center;padding:0 26px;line-height:1.7}
+.nav{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;padding:0;border-radius:50%;
+  display:none;align-items:center;justify-content:center;font-size:15px;background:var(--panel);opacity:.92}
+.nav.show{display:flex}
+.nav.prev{left:8px}.nav.next{right:8px}
+#photoDots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:none;gap:5px}
+#photoDots.show{display:flex}
+#photoDots i{width:6px;height:6px;border-radius:50%;background:var(--white);opacity:.45;box-shadow:0 0 4px var(--shadow)}
+#photoDots i.on{opacity:1;background:var(--accent)}
+.card-body{padding:12px 16px 14px}
+.meta{display:flex;justify-content:space-between;font-size:11.5px;color:var(--accent-2);font-weight:600}
+#cardTitle{margin:6px 0 6px;font-size:17px;line-height:1.35}
+#cardText{margin:0;font-size:13.5px;line-height:1.72;color:var(--text-2);white-space:pre-wrap}
+.actions{display:flex;gap:7px;margin-top:11px;align-items:center;flex-wrap:wrap}
+.actions button{padding:6px 11px;font-size:12.5px}
+.hint{font-size:11px;color:var(--text-2);margin-top:8px;opacity:.85;line-height:1.5}
+
+/* 音乐条 */
+.music{display:flex;align-items:center;gap:9px;margin-top:11px;padding:8px 10px;border-radius:12px;
+  background:var(--surface);border:1px solid var(--line)}
+.music .play{width:32px;height:32px;border-radius:50%;padding:0;font-size:13px;background:var(--accent);
+  color:var(--on-accent);border:none;flex:none;display:flex;align-items:center;justify-content:center}
+.music .name{flex:1;min-width:0;font-size:12.5px;line-height:1.3;overflow:hidden}
+.music .name small{display:block;font-size:10.5px;color:var(--text-2);margin-top:2px}
+.music .mini{width:26px;height:26px;padding:0;font-size:12px;flex:none;display:flex;align-items:center;justify-content:center}
+.eq{display:flex;align-items:flex-end;gap:2px;height:13px;width:16px;flex:none}
+.eq i{width:3px;height:25%;background:var(--accent);border-radius:2px}
+.eq.on i{animation:eq .85s ease-in-out infinite}
+.eq.on i:nth-child(2){animation-delay:.22s}
+.eq.on i:nth-child(3){animation-delay:.44s}
+@keyframes eq{0%,100%{height:22%}50%{height:100%}}
+
+/* 编辑面板 */
+#editor{display:none;padding:12px 16px 14px}
+#editor.show{display:block}
+#editor label{display:block;font-size:11px;color:var(--text-2);margin:0 0 3px}
+#editor input,#editor textarea{width:100%;font:inherit;font-size:13.5px;color:var(--text);background:var(--surface);
+  border:1px solid var(--line);border-radius:9px;padding:8px 10px;margin-bottom:9px;resize:vertical;
+  -webkit-user-select:text;user-select:text}
+#editor textarea{min-height:86px;line-height:1.6}
+#editor .ed-actions{display:flex;gap:8px}
+#editor .ed-actions button{flex:1;justify-content:center;padding:8px}
+#eSave{background:var(--accent);color:var(--on-accent);border:none;font-weight:600}
+
+/* 正在播放 */
+#now{position:fixed;right:16px;top:16px;z-index:8;display:flex;align-items:center;gap:9px;
+  padding:7px 9px 7px 12px;border-radius:999px;background:var(--panel-strong);border:1px solid var(--line);
+  box-shadow:0 8px 24px var(--shadow);opacity:0;transform:translateY(-10px);pointer-events:none;transition:.35s;max-width:62vw}
+#now.show{opacity:1;transform:none;pointer-events:auto}
+#now span{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#now button{width:26px;height:26px;padding:0;border-radius:50%;font-size:12px;display:flex;align-items:center;justify-content:center}
+
+/* 听歌氛围 */
+#listen{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity 1.4s;
+  background:radial-gradient(circle at 50% 42%,transparent 28%,var(--listen) 100%)}
+#listen.show{opacity:1}
+
+/* 工具 & 提示 */
+#tools{position:fixed;left:16px;top:16px;z-index:6;display:flex;gap:7px;opacity:0;transition:opacity .6s}
+#tools.show{opacity:1}
+#tools button{width:36px;height:36px;padding:0;font-size:15px}
+#pause{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:7;padding:9px 16px;border-radius:999px;
+  background:var(--panel);border:1px solid var(--line);font-size:13px;display:none;pointer-events:none;text-align:center}
+#toast{position:fixed;left:50%;top:86px;transform:translate(-50%,-10px);z-index:9;padding:8px 16px;border-radius:999px;
+  background:var(--accent);color:var(--on-accent);font-size:13px;font-weight:600;opacity:0;transition:all .4s;pointer-events:none;
+  max-width:86vw;text-align:center;line-height:1.4}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#cross{position:fixed;left:50%;top:50%;width:4px;height:4px;margin:-2px;border-radius:50%;background:var(--panel-strong);
+  opacity:.75;z-index:4;display:none}
+
+/* 手机摇杆 */
+#stick{position:fixed;width:108px;height:108px;border-radius:50%;border:2px solid var(--line);background:var(--panel);
+  opacity:.72;z-index:6;display:none;pointer-events:none;transform:translate(-50%,-50%)}
+#knob{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px;border-radius:50%;background:var(--accent)}
+#touchHint{position:fixed;bottom:16px;left:0;right:0;text-align:center;font-size:12px;color:var(--text);z-index:5;
+  display:none;text-shadow:0 1px 3px var(--shadow)}
+
+@media (pointer:coarse), (max-width:700px){
+  #card{right:auto;left:50%;bottom:auto;top:88px;transform:translate(-50%,-10px) scale(.97);
+    width:min(370px,calc(100% - 20px));max-height:calc(100% - 190px);overflow:auto}
+  #card.show{transform:translate(-50%,0)}
+  #cardPhoto{height:150px}
+  #tools{top:auto;bottom:14px;left:14px}
+  #hud{width:calc(100% - 130px)}
+  .hint{display:none}
+}
+</style>
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+</script>
+</head>
+<body>
+
+<div id="start">
+  <div class="start-box">
+    <div class="leaf">🍂</div>
+    <h1>银杏大道</h1>
+    <p class="sub">十二块记忆路牌，一整个年头。<br>走到路牌前，停下来听那一个月的声音。</p>
+    <div class="keys" id="keysDesk">
+      <b>W A S D / ↑↓←→</b><span>走路</span>
+      <b>鼠标</b><span>环顾四周</span>
+      <b>Shift</b><span>小跑</span>
+      <b>M</b><span>播放 / 暂停当月歌曲</span>
+      <b>M</b><span>播放 / 暂停当月旋律</span>
+      <b>Tab / Esc</b><span>释放鼠标</span>
+    </div>
+    <div class="keys" id="keysTouch" style="display:none">
+      <b>左半屏拖动</b><span>走路（推到底是小跑）</span>
+      <b>右半屏拖动</b><span>环顾四周</span>
+      <b>路牌卡片</b><span>点 ▶ 听当月旋律</span>
+    </div>
+    <button id="go">开始漫步</button>
+  </div>
+</div>
+
+<div id="hud">
+  <div class="hud-row"><span>已走 <b id="meters">0</b> 米</span><span>记忆路牌 <b id="found">0</b> / <b id="total">0</b></span></div>
+  <div id="track"><div id="fill"></div></div>
+</div>
+
+<div id="tools">
+  <button id="btnSound" title="声音开关">🔊</button>
+  <button id="btnAuto" title="自动漫步 / 手动行走">🚶</button>
+  
+</div>
+
+<div id="now">
+  <div class="eq on"><i></i><i></i><i></i></div>
+  <span id="nowTitle">正在播放</span>
+  <button id="nowToggle" title="暂停">⏸</button>
+</div>
+
+<div id="card">
+  <div id="cardPhoto">
+    <div class="art-label" id="artLabel"></div>
+  </div>
+  <div class="card-body" id="cardBody">
+    <div class="meta"><span id="cardNo"></span><span id="cardDate"></span></div>
+    <h3 id="cardTitle"></h3>
+    <p id="cardText"></p>
+    <div class="music">
+      <button class="play" id="playBtn">▶</button>
+      <div class="name" id="songName">当月歌曲<small>点 ▶ 停下来听一会儿</small></div>
+      <div class="eq" id="eq"><i></i><i></i><i></i></div>
+
+    </div>
+    <div class="auto-row" id="autoRow"><button id="btnNext">继续漫步 →</button><span id="autoCount"></span></div>
+    <div class="hint" id="cardHint">点 ▶ 听当月旋律 · 空格键继续</div>
+  </div>
+
+</div>
+
+<div id="listen"></div>
+<div id="pause">点击画面继续漫步</div>
+<div id="toast"></div>
+<div id="cross"></div>
+<div id="stick"><div id="knob"></div></div>
+<div id="touchHint">左边拖动走路 · 右边拖动看风景</div>
+<div id="finale"></div><div id="finaleCaption"><span>这一年的路，走到了这里</span><b>渐入佳境</b><small>风还会吹起新的叶子</small></div>
+
+<script type="module">
+import * as THREE from 'three';
+
+/* ============================================================
+   十二个月的内容：可以直接在网页里改（改完存在浏览器里），
+   也可以在这里写死，发给朋友时就是你写的样子。
+   ============================================================ */
+const MONTHS = [
+  { title:'一月 · 初雪', date:'2026.01', emoji:'❄️', sky:['#b9d3ee','#eef3f8'],
+    text:'推开窗，整座城忽然安静了。\n楼下的雪还没被人踩过，白得发亮。' },
+  { title:'二月 · 早梅', date:'2026.02', emoji:'🌸', sky:['#f3c2cf','#fdf0f3'],
+    text:'过年的灯笼还挂着，\n墙角那株腊梅先开了。' },
+  { title:'三月 · 樱花', date:'2026.03', emoji:'🌷', sky:['#f5bfd0','#fdeef2'],
+    text:'公园里第一棵樱花开了，\n风一吹，花瓣落进了咖啡杯。' },
+  { title:'四月 · 新绿', date:'2026.04', emoji:'🌱', sky:['#a8cf8a','#eef7e2'],
+    text:'树开始重新长叶子，\n骑车的那条路一下就有了光。' },
+  { title:'五月 · 海风', date:'2026.05', emoji:'🌊', sky:['#76c0e2','#e9f6fb'],
+    text:'第一次一个人去看海。\n带的书一页没看，光顾着听浪。' },
+  { title:'六月 · 梅雨', date:'2026.06', emoji:'☔', sky:['#8fa5b8','#e6eef4'],
+    text:'连着下了半个月的雨，\n阳台的衣服永远差一天干。' },
+  { title:'七月 · 夏夜', date:'2026.07', emoji:'🎆', sky:['#1f2a56','#6b4f86'],
+    text:'西瓜、蝉鸣、晚风，\n天上一朵接一朵的烟火。' },
+  { title:'八月 · 蝉鸣', date:'2026.08', emoji:'🌻', sky:['#f6c04a','#fbeea8'],
+    text:'中午的蝉叫得理直气壮，\n冰棍化得比谁都急。' },
+  { title:'九月 · 中秋', date:'2026.09', emoji:'🌕', sky:['#28304f','#c99a5b'],
+    text:'一家人坐在阳台上分月饼，\n月亮圆得刚刚好。' },
+  { title:'十月 · 银杏', date:'2026.10', emoji:'🍂', sky:['#f0c058','#fbe7b0'],
+    text:'就是这条路。\n踩着落叶走了很久，沙沙声像在说话。' },
+  { title:'十一月 · 落叶', date:'2026.11', emoji:'🍁', sky:['#e39d55','#f8dcae'],
+    text:'叶子掉得最凶的一周，\n扫地的师傅比谁都忙。' },
+  { title:'十二月 · 雪夜', date:'2026.12', emoji:'🕯️', sky:['#2b3352','#8d93b0'],
+    text:'给这一年画个句号。\n愿明年的秋天，也有人陪你踩落叶。' },
+];
+
+/* ---------- 十二个月的歌（网页实时合成，不需要音频文件） ---------- */
+/* mel：旋律。数字是音阶级数，*2 表示两拍，_ 表示休止；chords：和弦级数，每个 4 拍 */
+const SONGS = [
+  { name:'初雪',      bpm:58, root:60, scale:'min', tone:'bell',  mel:'0*2 4 2 0*2 2 4 5*2 4 2*2 0 -1 0*2', chords:'0 5 2 6' },
+  { name:'早梅',      bpm:66, root:62, scale:'maj', tone:'bell',  mel:'4*2 2 0 2*2 4 5 4*2 2*2 0*2', chords:'0 3 4 0' },
+  { name:'樱花',      bpm:74, root:65, scale:'maj', tone:'piano', mel:'0 2 4 5 4 2 0 2 4 5 7 5 4 2 4 0', chords:'0 5 3 4' },
+  { name:'新绿',      bpm:78, root:64, scale:'maj', tone:'flute', mel:'2 4 5 4 2 0 4 2 5 4 2 0 2 4 2 0', chords:'5 3 0 4' },
+  { name:'海风',      bpm:88, root:67, scale:'maj', tone:'piano', mel:'0 4 4 5 5 4*2 2 2 0 0 4 4 5 4*2', chords:'0 4 5 3' },
+  { name:'梅雨',      bpm:70, root:62, scale:'min', tone:'bell',  mel:'0 -3 2 0 -3 2 4 2 0 -3 2 -5 0*2', chords:'0 3 5 4' },
+  { name:'夏夜',      bpm:92, root:65, scale:'maj', tone:'piano', mel:'0 2 4 7 4 2 0 2 4 7 9 7 4 2 0 2', chords:'0 5 3 4' },
+  { name:'蝉鸣',      bpm:84, root:62, scale:'mix', tone:'flute', mel:'0 2 4 5 4 2 0 -1 0 2 4 7 4 2 0*2', chords:'0 6 3 4' },
+  { name:'中秋',      bpm:66, root:63, scale:'maj', tone:'bell',  mel:'4*2 5 4 2 4*2 2 0 2*2 4 5*2 4 2', chords:'0 5 2 3' },
+  { name:'银杏',      bpm:74, root:65, scale:'maj', tone:'piano', mel:'4 4 5 7 5 4 2 4 4 5 7 9 7 5 4 2', chords:'3 0 5 4' },
+  { name:'落叶',      bpm:62, root:60, scale:'min', tone:'bell',  mel:'5*2 4 2 0*2 -1 0 2*2 4 2 0*2', chords:'5 2 6 0' },
+  { name:'雪夜',      bpm:56, root:58, scale:'min', tone:'bell',  mel:'0*2 2 4 2 0*2 -3 0*2 4 2 0*2', chords:'0 5 2 0' },
+];
+const SCALES = { maj:[0,2,4,5,7,9,11], min:[0,2,3,5,7,8,10], dor:[0,2,3,5,7,9,10], mix:[0,2,4,5,7,9,10] };
+
+/* ---------- 小工具 ---------- */
+const rand = (a,b)=>a+Math.random()*(b-a);
+const $ = id=>document.getElementById(id);
+const isTouch = matchMedia('(pointer:coarse)').matches || ('ontouchstart' in window);
+const LOW = isTouch || innerWidth < 800;
+const ROAD_LEN = 390;
+const EYE = 1.65;
+const N = MONTHS.length;
+let toastTimer=0;
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2400); }
+
+/* ============================================================
+   存储：优先 IndexedDB（照片存 String/Blob，容量大），
+   不可用时退回 localStorage（照片体积受限）
+   ============================================================ */
+const DB_NAME='ginkgo-walk-db', DB_VER=1, LS_KEY='ginkgo-walk-v2';
+const Store = {
+  mode:'none', db:null, data:{},
+  async init(){
+    try{
+      this.db = await new Promise((res,rej)=>{
+        const rq=indexedDB.open(DB_NAME,DB_VER);
+        rq.onupgradeneeded=()=>{ const db=rq.result; if(!db.objectStoreNames.contains('signs')) db.createObjectStore('signs',{keyPath:'id'}); };
+        rq.onsuccess=()=>res(rq.result); rq.onerror=()=>rej(rq.error); rq.onblocked=()=>rej(new Error('blocked'));
+      });
+      const all = await new Promise((res,rej)=>{
+        const tx=this.db.transaction('signs','readonly'); const rq=tx.objectStore('signs').getAll();
+        rq.onsuccess=()=>res(rq.result||[]); rq.onerror=()=>rej(rq.error);
+      });
+      all.forEach(r=>{ this.data[r.id]=r; });
+      this.mode='idb';
+    }catch(e){
+      try{ this.data = JSON.parse(localStorage.getItem(LS_KEY)||'{}'); this.mode='local'; }
+      catch(e2){ this.data={}; this.mode='none'; }
+    }
+  },
+  rec(i){
+    const base = { id:i, title:MONTHS[i].title, date:MONTHS[i].date, text:MONTHS[i].text, photos:[], audio:null, audioName:'' };
+    const r = Object.assign(base, this.data[i]||{});
+    if (!Array.isArray(r.photos)) r.photos=[];
+    return r;
+  },
+  async put(rec){
+    this.data[rec.id]=rec;
+    if (this.mode==='idb'){
+      try{
+        await new Promise((res,rej)=>{
+          const tx=this.db.transaction('signs','readwrite'); tx.objectStore('signs').put(rec);
+          tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error);
+        });
+        return true;
+      }catch(e){ this.mode='local'; }
+    }
+    if (this.mode==='local'||this.mode==='none'){
+      try{
+        const slim={}; for (const k in this.data){ const r=this.data[k]; slim[k]={ id:r.id, title:r.title, date:r.date, text:r.text, photos:(r.photos||[]).slice(0,2), audioName:r.audioName||'' }; }
+        localStorage.setItem(LS_KEY, JSON.stringify(slim)); this.mode='local'; return true;
+      }catch(e){ return false; }
+    }
+    return false;
+  }
+};
+const recs = MONTHS.map((_,i)=>({ id:i, title:MONTHS[i].title, date:MONTHS[i].date, text:MONTHS[i].text, photos:[], audio:null, audioName:'' }));
+
+/* ---------- 渲染器 ---------- */
+const renderer = new THREE.WebGLRenderer({ antialias: !LOW, powerPreference:'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, LOW ? 1.5 : 2));
+renderer.setSize(innerWidth, innerHeight);
+document.body.prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+const FOG = new THREE.Color(0xf2c88e);
+scene.fog = new THREE.Fog(FOG, 18, LOW ? 88 : 118);
+const camera = new THREE.PerspectiveCamera(70, innerWidth/innerHeight, 0.05, 520);
+camera.rotation.order = 'YXZ';
+
+/* ---------- 天空 ---------- */
+const sky = new THREE.Mesh(
+  new THREE.SphereGeometry(300, 32, 16),
+  new THREE.ShaderMaterial({
+    side: THREE.BackSide, depthWrite:false, fog:false,
+    uniforms:{ top:{value:new THREE.Color(0x86acd8)}, mid:{value:new THREE.Color(0xf7d6a0)}, bottom:{value:FOG.clone()} },
+    vertexShader:`varying vec3 vP; void main(){ vP=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);} `,
+    fragmentShader:`uniform vec3 top; uniform vec3 mid; uniform vec3 bottom; varying vec3 vP;
+      void main(){ float h=vP.y; vec3 c = h>0.0 ? mix(mid, top, smoothstep(0.02,0.55,h)) : bottom;
+        if(h>0.0 && h<0.08) c = mix(bottom, c, h/0.08);
+        gl_FragColor=vec4(c,1.0);
+        #include <colorspace_fragment>
+      }`
+  })
+);
+scene.add(sky);
+
+function glowTexture(){
+  const c=document.createElement('canvas'); c.width=c.height=128; const g=c.getContext('2d');
+  const gr=g.createRadialGradient(64,64,0,64,64,64);
+  gr.addColorStop(0,'rgba(255,245,215,1)'); gr.addColorStop(.25,'rgba(255,220,150,.55)'); gr.addColorStop(1,'rgba(255,200,120,0)');
+  g.fillStyle=gr; g.fillRect(0,0,128,128);
+  const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t;
+}
+const GLOW = glowTexture();
+const sunDir = new THREE.Vector3(-0.45, 0.22, -1).normalize();
+const sun = new THREE.Sprite(new THREE.SpriteMaterial({ map:GLOW, color:0xfff1cf, transparent:true, depthWrite:false, fog:false, blending:THREE.AdditiveBlending }));
+sun.scale.set(90,90,1); scene.add(sun);
+
+scene.add(new THREE.HemisphereLight(0xffe7b8, 0x6d5426, 1.25));
+const dirLight = new THREE.DirectionalLight(0xffc57d, 1.9);
+dirLight.position.copy(sunDir).multiplyScalar(50); scene.add(dirLight);
+
+/* ---------- 地面 & 路 ---------- */
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshLambertMaterial({ color:0x9c8644 }));
+ground.rotation.x = -Math.PI/2; ground.position.z = -ROAD_LEN/2; scene.add(ground);
+const road = new THREE.Mesh(new THREE.PlaneGeometry(6.4, ROAD_LEN+60), new THREE.MeshLambertMaterial({ color:0xb7a07c }));
+road.rotation.x = -Math.PI/2; road.position.set(0, 0.008, -ROAD_LEN/2); scene.add(road);
+for (const s of [-1,1]){
+  const curb = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.12, ROAD_LEN+60), new THREE.MeshLambertMaterial({ color:0x8f7d63 }));
+  curb.position.set(s*3.3, 0.06, -ROAD_LEN/2); scene.add(curb);
+}
+
+/* ---------- 银杏树 ---------- */
+const colliders = [];
+const trees = [];
+for (let z = 4; z > -ROAD_LEN-20; z -= 8){
+  for (const s of [-1,1]){
+    trees.push({ x:s*(5.2+rand(-.3,.3)), z:z+rand(-1,1), s:rand(.88,1.18) });
+    trees.push({ x:s*(11+rand(-1.5,1.5)), z:z+4+rand(-1.5,1.5), s:rand(.85,1.25) });
+    if (!LOW || Math.random()<.5) trees.push({ x:s*rand(17,32), z:z+rand(-4,4), s:rand(.9,1.35) });
+  }
+}
+const BLOBS = 7;
+const trunkMesh = new THREE.InstancedMesh(
+  new THREE.CylinderGeometry(0.15, 0.3, 1, 7).translate(0, .5, 0),
+  new THREE.MeshLambertMaterial({ color:0x5a4030 }), trees.length);
+const canopyMesh = new THREE.InstancedMesh(
+  new THREE.IcosahedronGeometry(1, 1),
+  new THREE.MeshLambertMaterial({ color:0xffffff, flatShading:true }), trees.length*BLOBS);
+const GOLD = [0xf4c430,0xf0b41c,0xf7d046,0xe9a512,0xf2c84b,0xf9dc5c,0xe39b17].map(c=>new THREE.Color(c));
+{
+  const m=new THREE.Matrix4(), q=new THREE.Quaternion(), p=new THREE.Vector3(), sc=new THREE.Vector3(), e=new THREE.Euler();
+  let bi=0;
+  trees.forEach((t,i)=>{
+    m.compose(p.set(t.x,0,t.z), q.identity(), sc.set(t.s,5.2*t.s,t.s)); trunkMesh.setMatrixAt(i,m);
+    colliders.push({ x:t.x, z:t.z, r:0.45*t.s });
+    for (let k=0;k<BLOBS;k++){
+      let y,r,ox,oz;
+      if (k<5){ y=(3.4+k*0.85)*t.s; r=(1.95-k*0.3)*t.s; ox=rand(-.4,.4)*t.s; oz=rand(-.4,.4)*t.s; }
+      else { y=rand(3.8,5.2)*t.s; r=rand(.9,1.2)*t.s; const a=rand(0,Math.PI*2); ox=Math.cos(a)*1.3*t.s; oz=Math.sin(a)*1.3*t.s; }
+      e.set(rand(0,3),rand(0,3),0); q.setFromEuler(e);
+      m.compose(p.set(t.x+ox,y,t.z+oz), q, sc.set(r, r*0.78, r));
+      canopyMesh.setMatrixAt(bi,m);
+      canopyMesh.setColorAt(bi, GOLD[(Math.random()*GOLD.length)|0].clone().offsetHSL(rand(-.01,.01),0,rand(-.05,.04)));
+      bi++;
+    }
+  });
+}
+scene.add(trunkMesh, canopyMesh);
+
+/* ---------- 路灯 & 长椅 ---------- */
+const lampMat = new THREE.MeshLambertMaterial({ color:0x3b332b });
+const bulbMat = new THREE.MeshBasicMaterial({ color:0xffd796 });
+for (let z=-10, i=0; z>-ROAD_LEN; z-=24, i++){
+  const s = i%2 ? 1 : -1;
+  const post = new THREE.Mesh(new THREE.CylinderGeometry(.05,.07,3.4,8), lampMat); post.position.set(s*3.7,1.7,z);
+  const bulb = new THREE.Mesh(new THREE.SphereGeometry(.17,12,8), bulbMat); bulb.position.set(s*3.7,3.45,z);
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map:GLOW, color:0xffc070, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, opacity:.6 }));
+  halo.scale.set(2.2,2.2,1); halo.position.copy(bulb.position);
+  scene.add(post,bulb,halo); colliders.push({x:s*3.7,z,r:.2});
+}
+const woodMat = new THREE.MeshLambertMaterial({ color:0x8a5a2b });
+for (let z=-38, i=0; z>-ROAD_LEN; z-=44, i++){
+  const s = i%2 ? -1 : 1; const g = new THREE.Group();
+  const seat = new THREE.Mesh(new THREE.BoxGeometry(1.7,.07,.45), woodMat); seat.position.y=.45;
+  const back = new THREE.Mesh(new THREE.BoxGeometry(1.7,.4,.06), woodMat); back.position.set(0,.75,-.22);
+  g.add(seat, back);
+  for (const lx of [-.75,.75]){ const leg=new THREE.Mesh(new THREE.BoxGeometry(.06,.45,.4), lampMat); leg.position.set(lx,.22,0); g.add(leg); }
+  g.position.set(s*4.1,0,z); g.rotation.y = s>0 ? -Math.PI/2 : Math.PI/2; scene.add(g);
+  colliders.push({x:s*4.1,z,r:.8});
+}
+
+/* ---------- 路牌 ---------- */
+function drawBoard(i){
+  const r = recs[i], c=document.createElement('canvas'); c.width=512; c.height=304; const g=c.getContext('2d');
+  g.fillStyle='#8a5a2b'; g.fillRect(0,0,512,304);
+  for (let k=0;k<26;k++){ g.strokeStyle=`rgba(60,30,10,${rand(.08,.2)})`; g.lineWidth=rand(1,3);
+    g.beginPath(); const y=rand(0,304); g.moveTo(0,y); g.bezierCurveTo(170,y+rand(-12,12),340,y+rand(-12,12),512,y+rand(-6,6)); g.stroke(); }
+  g.strokeStyle='#5a3615'; g.lineWidth=16; g.strokeRect(8,8,496,288);
+  g.textAlign='center';
+  g.font='26px serif'; g.fillStyle='#ffd77a'; g.fillText(`🍂  ${String(i+1).padStart(2,'0')} / 12  🍂`,256,62);
+  g.fillStyle='#fff3d6'; let fs=48;
+  const font=k=>`bold ${k}px "PingFang SC","Microsoft YaHei",sans-serif`;
+  g.font=font(fs);
+  while (g.measureText(r.title).width>440 && fs>20){ fs-=2; g.font=font(fs); }
+  g.fillText(r.title,256,160);
+  g.fillStyle='#f2c27a'; g.font='26px sans-serif'; g.fillText(r.date||'',256,214);
+  if (r.photos.length){ g.fillStyle='#ffe3ae'; g.font='20px sans-serif'; g.fillText(`📷 ${r.photos.length} 张照片`,256,264); }
+  const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=4; return t;
+}
+const signs = MONTHS.map((_,i)=>{
+  const side = i%2 ? 1 : -1, z = -22 - i*32, x = side*3.0;
+  const g = new THREE.Group();
+  const post = new THREE.Mesh(new THREE.BoxGeometry(.14,2.3,.14), woodMat); post.position.y=1.15;
+  const board = new THREE.Mesh(new THREE.BoxGeometry(1.9,1.14,.08), new THREE.MeshLambertMaterial({ color:0x5a3615 })); board.position.y=2.1;
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(1.79,1.05), new THREE.MeshBasicMaterial({ map:drawBoard(i) }));
+  face.position.set(0,2.1,.045);
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(1.79,1.05), new THREE.MeshBasicMaterial({ map:face.material.map }));
+  back.rotation.y=Math.PI; back.position.z=-.045;
+  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map:GLOW, color:0xffd27a, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending }));
+  glow.scale.set(1.4,1.4,1); glow.position.y=3.05;
+  g.add(post,board,face,back,glow);
+  g.position.set(x,0,z); g.rotation.y = side<0 ? 0.9 : -0.9;
+  scene.add(g); colliders.push({x,z,r:.32});
+  return { x, z, face, back, glow, visited:false };
+});
+
+/* ---------- 落叶 ---------- */
+function ginkgoGeo(){
+  const s=new THREE.Shape();
+  s.moveTo(-.008,0); s.lineTo(.008,0); s.lineTo(.014,.05);
+  s.quadraticCurveTo(.095,.06,.1,.13);
+  s.quadraticCurveTo(.06,.165,.012,.142);
+  s.lineTo(0,.122); s.lineTo(-.012,.142);
+  s.quadraticCurveTo(-.06,.165,-.1,.13);
+  s.quadraticCurveTo(-.095,.06,-.014,.05);
+  s.lineTo(-.008,0);
+  const g=new THREE.ShapeGeometry(s,5); g.translate(0,-.08,0); g.scale(1.35,1.35,1.35); g.rotateX(-Math.PI/2);
+  return g;
+}
+const leafGeo = ginkgoGeo();
+const leafMat = new THREE.MeshLambertMaterial({ color:0xffffff, side:THREE.DoubleSide });
+const LEAF_COLORS = [0xf6c632,0xf2b822,0xf8d54a,0xeaa514,0xf3c13a,0xe7951c,0xd9861e,0xc9a24a,0xb98a3a].map(c=>new THREE.Color(c));
+const pickLeafColor = ()=> LEAF_COLORS[(Math.random()*(Math.random()<.85?5:LEAF_COLORS.length))|0].clone().offsetHSL(0,0,rand(-.06,.05));
+
+const _m=new THREE.Matrix4(), _q=new THREE.Quaternion(), _e=new THREE.Euler(), _p=new THREE.Vector3(), _s=new THREE.Vector3();
+function setLeaf(mesh, P, R, S, i){
+  _e.set(R[i*3],R[i*3+1],R[i*3+2]); _q.setFromEuler(_e);
+  _p.set(P[i*3],P[i*3+1],P[i*3+2]); _s.setScalar(S[i]);
+  _m.compose(_p,_q,_s); mesh.setMatrixAt(i,_m);
+}
+
+const NG = LOW ? 3400 : 8200;
+const gPos=new Float32Array(NG*3), gVel=new Float32Array(NG*3), gRot=new Float32Array(NG*3), gAng=new Float32Array(NG*3);
+const gScl=new Float32Array(NG), gRest=new Float32Array(NG), gState=new Uint8Array(NG);
+const groundLeaves = new THREE.InstancedMesh(leafGeo, leafMat, NG);
+groundLeaves.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+for (let i=0;i<NG;i++){
+  let x; const r=Math.random();
+  if (r<.55) x=rand(-3.2,3.2); else if (r<.85) x=(Math.random()<.5?-1:1)*rand(3.2,7); else x=rand(-14,14);
+  gPos[i*3]=x; gRest[i]=rand(.012,.035); gPos[i*3+1]=gRest[i]; gPos[i*3+2]=rand(-ROAD_LEN-8, 10);
+  gRot[i*3]=rand(-.15,.15); gRot[i*3+1]=rand(0,Math.PI*2); gRot[i*3+2]=rand(-.15,.15);
+  gScl[i]=rand(.75,1.35);
+  setLeaf(groundLeaves,gPos,gRot,gScl,i); groundLeaves.setColorAt(i,pickLeafColor());
+}
+scene.add(groundLeaves);
+
+const NF = LOW ? 260 : 650;
+const fPos=new Float32Array(NF*3), fRot=new Float32Array(NF*3), fScl=new Float32Array(NF), fPar=new Float32Array(NF*4);
+const fallLeaves = new THREE.InstancedMesh(leafGeo, leafMat, NF);
+fallLeaves.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+function respawnFall(i, px, pz, anyY){
+  fPos[i*3]=px+rand(-22,22); fPos[i*3+1]=anyY?rand(.5,11):rand(7,12); fPos[i*3+2]=pz+rand(-30,12);
+  fScl[i]=rand(.8,1.3); fPar[i*4]=rand(.45,.9); fPar[i*4+1]=rand(0,6.28); fPar[i*4+2]=rand(1,2.4); fPar[i*4+3]=rand(.3,.9);
+}
+for (let i=0;i<NF;i++){ respawnFall(i,0,0,true); fallLeaves.setColorAt(i,pickLeafColor()); }
+scene.add(fallLeaves);
+
+const ND = LOW ? 150 : 350;
+const dustGeo = new THREE.BufferGeometry();
+const dPos = new Float32Array(ND*3);
+for (let i=0;i<ND;i++){ dPos[i*3]=rand(-14,14); dPos[i*3+1]=rand(.3,6); dPos[i*3+2]=rand(-14,14); }
+dustGeo.setAttribute('position', new THREE.BufferAttribute(dPos,3));
+const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color:0xfff0c4, size:.06, transparent:true, opacity:.75, depthWrite:false, blending:THREE.AdditiveBlending }));
+scene.add(dust);
+
+/* ---------- 终点：由金色叶片组成的「渐入佳境」 ---------- */
+const finaleGroup=new THREE.Group(); scene.add(finaleGroup);
+const finaleCount=520;
+const finalePos=new Float32Array(finaleCount*3), finaleRot=new Float32Array(finaleCount*3), finaleScale=new Float32Array(finaleCount);
+const finaleTarget=new Float32Array(finaleCount*3), finalePhase=new Float32Array(finaleCount);
+const finaleMesh=new THREE.InstancedMesh(leafGeo,leafMat,finaleCount);
+finaleMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+function makeFinaleTargets(){
+  const c=document.createElement('canvas'); c.width=1000;c.height=300;const g=c.getContext('2d');
+  g.fillStyle='#fff';g.textAlign='center';g.textBaseline='middle';g.font='bold 180px "Noto Sans SC","Microsoft YaHei",sans-serif';g.fillText('渐入佳境',500,150);
+  const d=g.getImageData(0,0,c.width,c.height).data, pts=[];
+  for(let y=0;y<c.height;y+=3)for(let x=0;x<c.width;x+=3)if(d[(y*c.width+x)*4+3]>100)pts.push([x,y]);
+  for(let i=0;i<finaleCount;i++){
+    const p=pts[(i*pts.length/finaleCount)|0]||[500,150];
+    finaleTarget[i*3]=(p[0]-500)*.014;
+    finaleTarget[i*3+1]=3.9-(p[1]-150)*.014;
+    finaleTarget[i*3+2]=0;
+    finalePhase[i]=rand(0,Math.PI*2); finaleScale[i]=rand(.65,1.2);
+    finalePos[i*3]=rand(-14,14); finalePos[i*3+1]=rand(1,9); finalePos[i*3+2]=rand(-8,8);
+    finaleRot[i*3]=rand(0,6); finaleRot[i*3+1]=rand(0,6); finaleRot[i*3+2]=rand(0,6);
+    finaleMesh.setColorAt(i,pickLeafColor());
+  }
+}
+makeFinaleTargets(); finaleGroup.add(finaleMesh);
+const finaleCaption=$('finaleCaption');
+
+/* ============================================================
+   声音：环境（风声 + 落叶沙沙）+ 十二个月的合成曲
+   ============================================================ */
+let AC=null, master=null, noiseBuf=null, soundOn=true;
+function ensureAudio(){
+  if (AC){ if (AC.state==='suspended') AC.resume(); return AC; }
+  try { AC = new (window.AudioContext||window.webkitAudioContext)(); } catch(e){ return null; }
+  master = AC.createGain(); master.gain.value = .9; master.connect(AC.destination);
+  const len = AC.sampleRate*2; noiseBuf = AC.createBuffer(1,len,AC.sampleRate);
+  const d = noiseBuf.getChannelData(0); for (let i=0;i<len;i++) d[i]=Math.random()*2-1;
+  const src=AC.createBufferSource(); src.buffer=noiseBuf; src.loop=true;
+  const lp=AC.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=420;
+  const wg=AC.createGain(); wg.gain.value=.07;
+  const lfo=AC.createOscillator(); lfo.frequency.value=.11; const lg=AC.createGain(); lg.gain.value=.05;
+  lfo.connect(lg).connect(wg.gain); src.connect(lp).connect(wg).connect(master); src.start(); lfo.start();
+  return AC;
+}
+function rustle(vol, bright){
+  if (!AC || !soundOn) return;
+  const t = AC.currentTime, grains = bright ? 5 : 4;
+  for (let k=0;k<grains;k++){
+    const src=AC.createBufferSource(); src.buffer=noiseBuf;
+    const bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=(bright?3600:2300)+Math.random()*2200; bp.Q.value=.6+Math.random()*1.2;
+    const g=AC.createGain(); const st=t+k*.028+Math.random()*.02, dur=.06+Math.random()*.13;
+    g.gain.setValueAtTime(.0001,st); g.gain.exponentialRampToValueAtTime(Math.max(.002,vol*(.5+Math.random()*.7)),st+.008);
+    g.gain.exponentialRampToValueAtTime(.0001,st+dur);
+    src.connect(bp).connect(g).connect(master); src.start(st, Math.random()*1.6, dur+.05);
+  }
+}
+function chime(){
+  if (!AC || !soundOn) return;
+  const t=AC.currentTime;
+  [659.25, 987.77, 1318.5].forEach((f,k)=>{
+    const o=AC.createOscillator(); o.type='sine'; o.frequency.value=f;
+    const g=AC.createGain(); const st=t+k*.12;
+    g.gain.setValueAtTime(.0001,st); g.gain.exponentialRampToValueAtTime(.12,st+.02); g.gain.exponentialRampToValueAtTime(.0001,st+1.4);
+    o.connect(g).connect(master); o.start(st); o.stop(st+1.5);
+  });
+}
+$('btnSound').onclick = ()=>{
+  soundOn=!soundOn; $('btnSound').textContent = soundOn?'🔊':'🔇';
+  if (master) master.gain.value = soundOn ? .9 : 0;
+};
+
+/* ---------- 曲谱解析 ---------- */
+const midiToFreq = m=>440*Math.pow(2,(m-69)/12);
+function degToMidi(scale, root, d){
+  const n=scale.length, o=Math.floor(d/n), i=((d%n)+n)%n;
+  return root+12*o+scale[i];
+}
+function parseMel(str){
+  const notes=[]; let b=0;
+  for (const tok of str.trim().split(/\s+/)){
+    if (!tok) continue;
+    const m=/^(_)?(-?\d+)?(?:\*([\d.]+))?$/.exec(tok);
+    if (!m) continue;
+    const rest=!!m[1], deg=m[2]!==undefined?parseInt(m[2],10):0, len=m[3]?parseFloat(m[3]):1;
+    if (!rest) notes.push({beat:b, deg, len});
+    b+=len;
+  }
+  return {notes, beats:b};
+}
+function buildSong(idx){
+  const def=SONGS[idx], scale=SCALES[def.scale]||SCALES.maj;
+  const {notes, beats}=parseMel(def.mel);
+  const chords=def.chords.trim().split(/\s+/).map(n=>parseInt(n,10));
+  const cb=4, progLen=chords.length*cb;
+  const loop=Math.max(beats, progLen);
+  const events=[];
+  notes.forEach(n=>events.push({step:n.beat, kind:'mel', midi:degToMidi(scale,def.root,n.deg), dur:n.len}));
+  for (let base=0; base<loop; base+=progLen){
+    chords.forEach((cd,k)=>{
+      const start=base+k*cb; if (start>=loop) return;
+      [0,2,4].forEach(off=>{
+        events.push({step:start, kind:'pad', midi:degToMidi(scale, def.root-12, cd+off), dur:cb});
+      });
+    });
+  }
+  const steps=Math.ceil(loop*2);
+  const byStep={}; events.forEach(e=>{ const s=Math.round(e.step*2); (byStep[s]||(byStep[s]=[])).push(e); });
+  return { byStep, steps, beatDur:60/def.bpm, tone:def.tone, def };
+}
+
+const Player = {
+  on:false, idx:-1, mode:'', song:null, gain:null, send:null, timer:0, step:0, next:0,
+  el:null, elUrl:'', fadeTimer:0,
+
+  /* 内置合成曲 */
+  playBuiltin(idx){
+    ensureAudio(); if (!AC) return;
+    this.stop(true);
+    this.idx=idx; this.mode='builtin';
+    this.song=buildSong(idx);
+    const g=AC.createGain(); g.gain.value=0; g.connect(master);
+    const dl=AC.createDelay(1.0); dl.delayTime.value=.31;
+    const fb=AC.createGain(); fb.gain.value=.26;
+    const lp=AC.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1800;
+    dl.connect(lp).connect(fb).connect(dl); dl.connect(g);
+    const send=AC.createGain(); send.gain.value=.42; send.connect(dl);
+    this.gain=g; this.send=send;
+    g.gain.setValueAtTime(0, AC.currentTime);
+    g.gain.linearRampToValueAtTime(.85, AC.currentTime+1.5);
+    this.step=0; this.next=AC.currentTime+.12;
+    this.timer=setInterval(()=>this.tick(), 45);
+    this.on=true;
+  },
+  tick(){
+    if (!this.on || this.mode!=='builtin' || !AC) return;
+    const ahead=AC.currentTime+.4;
+    let guard=0;
+    while (this.next<ahead && guard++<40){
+      const evs=this.song.byStep[this.step];
+      if (evs) for (const e of evs){
+        if (e.kind==='mel') this.voiceMel(e.midi, this.next, e.dur*this.song.beatDur);
+        else this.voicePad(e.midi, this.next, e.dur*this.song.beatDur);
+      }
+      this.next += this.song.beatDur*.5;
+      this.step = (this.step+1) % this.song.steps;
+    }
+  },
+  voiceMel(midi, t, dur){
+    if (!AC || !this.gain) return;
+    const f=midiToFreq(midi), tone=this.song.tone;
+    const g=AC.createGain(); g.connect(this.gain); if (this.send) g.connect(this.send);
+    const end=t+Math.max(.4, dur*1.5);
+    if (tone==='flute'){
+      const o=AC.createOscillator(); o.type='triangle'; o.frequency.value=f;
+      const vib=AC.createOscillator(); vib.frequency.value=5.2;
+      const vg=AC.createGain(); vg.gain.value=f*0.006; vib.connect(vg).connect(o.frequency);
+      o.connect(g);
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.19,t+.09);
+      g.gain.setValueAtTime(.19,t+Math.max(.12,dur*.7)); g.gain.exponentialRampToValueAtTime(.0008,t+dur+.35);
+      o.start(t); vib.start(t); o.stop(t+dur+.4); vib.stop(t+dur+.4);
+    } else if (tone==='piano'){
+      const o1=AC.createOscillator(); o1.type='triangle'; o1.frequency.value=f;
+      const o2=AC.createOscillator(); o2.type='sine'; o2.frequency.value=f*2;
+      const g2=AC.createGain(); g2.gain.value=.3;
+      const lp=AC.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=2600;
+      o1.connect(lp); o2.connect(g2).connect(lp); lp.connect(g);
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.2,t+.008);
+      g.gain.exponentialRampToValueAtTime(.001, t+Math.max(.5,dur*1.7));
+      o1.start(t); o2.start(t); o1.stop(end+.4); o2.stop(end+.4);
+    } else { /* bell */
+      const o1=AC.createOscillator(); o1.type='sine'; o1.frequency.value=f;
+      const o2=AC.createOscillator(); o2.type='triangle'; o2.frequency.value=f*2.01;
+      const g2=AC.createGain(); g2.gain.value=.22;
+      o1.connect(g); o2.connect(g2).connect(g);
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.22,t+.01);
+      g.gain.exponentialRampToValueAtTime(.0008, t+Math.max(.6,dur*1.9));
+      o1.start(t); o2.start(t); o1.stop(end+.8); o2.stop(end+.8);
+    }
+  },
+  voicePad(midi, t, dur){
+    if (!AC || !this.gain) return;
+    const f=midiToFreq(midi);
+    const o1=AC.createOscillator(); o1.type='sine'; o1.frequency.value=f;
+    const o2=AC.createOscillator(); o2.type='triangle'; o2.frequency.value=f*1.004;
+    const lp=AC.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1000;
+    const g=AC.createGain(); o1.connect(lp); o2.connect(lp); lp.connect(g); g.connect(this.gain);
+    const a=Math.min(.6,dur*.45);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.055,t+a*.6);
+    g.gain.setValueAtTime(.055, t+Math.max(a, dur*.75));
+    g.gain.exponentialRampToValueAtTime(.0008, t+dur+.2);
+    o1.start(t); o2.start(t); o1.stop(t+dur+.3); o2.stop(t+dur+.3);
+  },
+
+  /* 自己的音乐文件 */
+  playFile(idx, blob){
+    this.stop(true);
+    this.idx=idx; this.mode='file';
+    const url=URL.createObjectURL(blob);
+    const el=new Audio(url); el.loop=true; el.volume=0;
+    this.el=el; this.elUrl=url;
+    const p=el.play(); if (p && p.catch) p.catch(()=>{});
+    const t0=performance.now();
+    clearInterval(this.fadeTimer);
+    this.fadeTimer=setInterval(()=>{
+      const k=Math.min(1,(performance.now()-t0)/1200);
+      if (this.el) this.el.volume=.85*k; else clearInterval(this.fadeTimer);
+      if (k>=1) clearInterval(this.fadeTimer);
+    },60);
+    this.on=true;
+  },
+  stop(silent){
+    const was=this.on;
+    this.on=false; this.idx=-1;
+    clearInterval(this.timer); this.timer=0;
+    if (this.mode==='builtin' && this.gain && AC){
+      const g=this.gain, t=AC.currentTime;
+      try{ g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value,t);
+        g.gain.linearRampToValueAtTime(0,t+.8); }catch(e){}
+      setTimeout(()=>{ try{ g.disconnect(); }catch(e){} }, 1000);
+      this.gain=null; this.send=null;
+    }
+    if (this.mode==='file'){
+      const el=this.el, url=this.elUrl;
+      clearInterval(this.fadeTimer);
+      if (el){
+        const t0=performance.now(); const v0=el.volume;
+        const iv=setInterval(()=>{
+          const k=Math.min(1,(performance.now()-t0)/700);
+          try{ el.volume=Math.max(0,v0*(1-k)); }catch(e){}
+          if (k>=1){ clearInterval(iv); el.pause(); URL.revokeObjectURL(url); }
+        },50);
+      }
+      this.el=null; this.elUrl='';
+    }
+    this.mode='';
+    if (!silent && was) toast('音乐已停');
+  }
+};
+
+/* ---------- 界面元素 ---------- */
+const card=$('card'), photoEl=$('cardPhoto');
+let activeSign=-1, shownSign=-1;
+
+function songTitle(i){
+  const r=recs[i];
+  return r.audio ? (r.audioName||('自定义音乐 · '+MONTHS[i].title.split('·')[0].trim())) : (SONGS[i]? `${MONTHS[i].title.split('·')[0].trim()} · ${SONGS[i].name}` : '当月歌曲');
+}
+function updateMusicUI(){
+  const playing = Player.on && Player.idx===shownSign;
+  $('playBtn').textContent = playing ? '❚❚' : '▶';
+  $('eq').classList.toggle('on', playing);
+  if (shownSign>=0){
+    const i=shownSign, sub=playing?'原创合成旋律 · 循环播放':'原创合成旋律 · 点 ▶ 聆听';
+    $('songName').innerHTML = `${SONGS[i].name}<small>${sub}</small>`;
+  }
+  const nowOn = Player.on && Player.idx>=0;
+  $('now').classList.toggle('show', nowOn);
+  $('listen').classList.toggle('show', nowOn);
+  if (nowOn){ $('nowTitle').textContent = `${MONTHS[Player.idx].title} · ${SONGS[Player.idx].name}`; $('nowToggle').textContent='❚❚'; }
+}
+
+/* 每个月专属的原创插画卡片，直接随网页提供，不需要用户上传照片 */
+const artCache=[];
+function monthArt(i){
+  if (artCache[i]) return artCache[i];
+  const m=MONTHS[i], c=document.createElement('canvas'); c.width=900; c.height=520;
+  const g=c.getContext('2d');
+  const sky=g.createLinearGradient(0,0,0,520); sky.addColorStop(0,m.sky[0]); sky.addColorStop(1,m.sky[1]);
+  g.fillStyle=sky; g.fillRect(0,0,900,520);
+  // 月亮/柔光
+  g.globalAlpha=.25; g.fillStyle='#fff4d8'; g.beginPath(); g.arc(700,130,82,0,Math.PI*2); g.fill(); g.globalAlpha=1;
+  // 远山
+  g.fillStyle='rgba(68,78,61,.20)'; g.beginPath(); g.moveTo(0,355); g.quadraticCurveTo(170,200,330,350); g.quadraticCurveTo(480,220,640,350); g.quadraticCurveTo(770,260,900,345); g.lineTo(900,520); g.lineTo(0,520); g.fill();
+  g.fillStyle='rgba(78,78,47,.25)'; g.beginPath(); g.moveTo(0,410); g.quadraticCurveTo(210,300,410,414); g.quadraticCurveTo(640,300,900,410); g.lineTo(900,520); g.lineTo(0,520); g.fill();
+  // 月份主题的小型风景符号
+  const icon=m.emoji||'🍂'; g.textAlign='center'; g.textBaseline='middle'; g.font='150px serif';
+  g.shadowColor='rgba(45,34,20,.2)'; g.shadowBlur=18; g.fillText(icon,450,265); g.shadowBlur=0;
+  // 前景层叠曲线
+  g.fillStyle='rgba(68,82,42,.30)'; g.beginPath(); g.moveTo(0,445); g.quadraticCurveTo(230,385,450,450); g.quadraticCurveTo(650,500,900,420); g.lineTo(900,520); g.lineTo(0,520); g.fill();
+  // 细碎星点 / 花瓣 / 雪
+  for(let k=0;k<40;k++){
+    const x=rand(20,880), y=rand(30,390), r=rand(1.2,3.8);
+    g.globalAlpha=rand(.18,.56); g.fillStyle='#fff8df'; g.beginPath(); g.arc(x,y,r,0,Math.PI*2); g.fill();
+  }
+  g.globalAlpha=1;
+  // 底部磨砂文字牌
+  g.fillStyle='rgba(255,248,225,.72)'; g.fillRect(34,424,832,64);
+  g.fillStyle='#543d22'; g.font='600 27px sans-serif'; g.textAlign='left'; g.fillText(m.title,58,464);
+  g.textAlign='right'; g.font='20px sans-serif'; g.fillStyle='#80633c'; g.fillText(m.date,840,464);
+  return artCache[i]=c.toDataURL('image/jpeg',.9);
+}
+function showCard(i){
+  shownSign=i;
+  $('cardNo').textContent = `记忆路牌 ${String(i+1).padStart(2,'0')} / 12`;
+  $('cardDate').textContent = MONTHS[i].date;
+  $('cardTitle').textContent = MONTHS[i].title;
+  $('cardText').textContent = MONTHS[i].text;
+  photoEl.style.backgroundImage=`url("${monthArt(i)}")`;
+  $('artLabel').textContent=`${String(i+1).padStart(2,'0')}  /  12 MONTHS`;
+  updateMusicUI(); card.classList.add('show');
+}
+function hideCard(){ card.classList.remove('show'); shownSign=-1; $('autoRow').classList.remove('show'); updateMusicUI(); }
+function toggleMusic(){
+  const i = shownSign>=0 ? shownSign : activeSign;
+  if (i<0) return;
+  ensureAudio();
+  if (Player.on && Player.idx===i) Player.stop();
+  else Player.playBuiltin(i);
+  updateMusicUI();
+}
+$('playBtn').onclick=toggleMusic;
+$('nowToggle').onclick=()=>{ if (Player.on){ Player.stop(); updateMusicUI(); } };
+
+/* ---------- 自动漫步：走到路牌自动停下，弹出记忆卡片 ---------- */
+const WAIT_SEC=12;
+const auto={ on:true, state:'walk', next:0, wait:0 };
+function setAuto(on){
+  auto.on=on; $('btnAuto').classList.toggle('on',on);
+  if (on){
+    // 从当前所在位置之后的第一个未到达路牌继续
+    auto.next=signs.findIndex(s=>s.z < player.z-1); if (auto.next<0) auto.next=N;
+    auto.state='walk'; hideCard(); toast('自动漫步中 · 按方向键可随时改为手动');
+  } else { $('autoRow').classList.remove('show'); toast('已切换为手动行走 · 点 🚶 恢复自动'); }
+}
+function arriveAt(i){
+  const s=signs[i];
+  auto.state='stop'; auto.wait=WAIT_SEC;
+  if (!s.visited){ s.visited=true; foundCount++; dots[i].classList.add('on'); $('found').textContent=foundCount; }
+  chime(); showCard(i); $('autoRow').classList.add('show');
+  $('btnNext').textContent = i===N-1 ? '走向尽头 →' : '继续漫步 →';
+  unlock();
+}
+function continueWalk(){
+  if (!auto.on || auto.state!=='stop') return;
+  hideCard(); auto.next++; auto.state='walk';
+}
+$('btnNext').onclick=continueWalk;
+$('btnAuto').onclick=()=>setAuto(!auto.on);
+$('btnAuto').classList.add('on');
+
+/* ---------- 玩家 ---------- */
+const player = { x:0, z:6, yaw:0, pitch:0, vx:0, vz:0, phase:0 };
+const keys = {};
+let started=false, locked=false;
+function unlock(){ if (document.pointerLockElement) document.exitPointerLock(); }
+addEventListener('keydown', e=>{
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','Tab'].includes(e.code)) e.preventDefault();
+  keys[e.code]=true;
+  if (!started) return;
+  if (e.code==='Tab'){ unlock(); return; }
+  const i = activeSign>=0?activeSign:shownSign;
+  if (e.code==='KeyM' && i>=0) toggleMusic();
+  if ((e.code==='Space'||e.code==='Enter') && auto.on) continueWalk();
+  if (auto.on && ['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)) setAuto(false);
+});
+addEventListener('keyup', e=>{ keys[e.code]=false; });
+addEventListener('blur', ()=>{ for (const k in keys) keys[k]=false; });
+
+renderer.domElement.addEventListener('click', ()=>{ if (started && !isTouch && !locked) renderer.domElement.requestPointerLock?.(); });
+document.addEventListener('pointerlockchange', ()=>{
+  locked = document.pointerLockElement === renderer.domElement;
+  $('pause').style.display = (started && !isTouch && !locked) ? 'block' : 'none';
+  $('cross').style.display = locked ? 'block' : 'none';
+});
+document.addEventListener('mousemove', e=>{
+  if (!locked) return;
+  player.yaw -= e.movementX*.0022; player.pitch -= e.movementY*.0022;
+  player.pitch = Math.max(-1.25, Math.min(1.25, player.pitch));
+});
+
+// 手机摇杆
+const joy={ id:null, ox:0, oy:0, x:0, y:0 }, look={ id:null, lx:0, ly:0 };
+const stick=$('stick'), knob=$('knob');
+addEventListener('touchstart', e=>{
+  if (!started) return;
+  for (const t of e.changedTouches){
+    if (t.target.closest && t.target.closest('#card,#tools,#now,#editor')) continue;
+    if (t.clientX < innerWidth*.45 && joy.id===null){
+      joy.id=t.identifier; joy.ox=t.clientX; joy.oy=t.clientY; joy.x=joy.y=0;
+      stick.style.left=t.clientX+'px'; stick.style.top=t.clientY+'px'; stick.style.display='block'; knob.style.transform='';
+    } else if (look.id===null){ look.id=t.identifier; look.lx=t.clientX; look.ly=t.clientY; }
+  }
+},{passive:true});
+addEventListener('touchmove', e=>{
+  for (const t of e.changedTouches){
+    if (t.identifier===joy.id){
+      let dx=t.clientX-joy.ox, dy=t.clientY-joy.oy; const d=Math.hypot(dx,dy), max=50;
+      if (d>max){ dx*=max/d; dy*=max/d; }
+      joy.x=dx/max; joy.y=dy/max; knob.style.transform=`translate(${dx}px,${dy}px)`;
+    } else if (t.identifier===look.id){
+      player.yaw -= (t.clientX-look.lx)*.005; player.pitch -= (t.clientY-look.ly)*.005;
+      player.pitch = Math.max(-1.2, Math.min(1.2, player.pitch));
+      look.lx=t.clientX; look.ly=t.clientY;
+    }
+  }
+},{passive:true});
+function endTouch(e){
+  for (const t of e.changedTouches){
+    if (t.identifier===joy.id){ joy.id=null; joy.x=joy.y=0; stick.style.display='none'; }
+    if (t.identifier===look.id) look.id=null;
+  }
+}
+addEventListener('touchend', endTouch); addEventListener('touchcancel', endTouch);
+
+/* ---------- 进度点 ---------- */
+$('total').textContent = N;
+const dots = signs.map(s=>{
+  const d=document.createElement('div'); d.className='dot';
+  d.style.left = ((6 - s.z)/(6+ROAD_LEN)*100)+'%'; $('track').appendChild(d); return d;
+});
+if (isTouch){ $('keysDesk').style.display='none'; $('keysTouch').style.display='grid'; }
+
+$('go').onclick = async ()=>{
+  started=true; ensureAudio();
+  $('start').classList.add('hide'); $('hud').classList.add('show'); $('tools').classList.add('show');
+  if (isTouch){ $('touchHint').style.display='block'; setTimeout(()=>$('touchHint').style.display='none', 6000); }
+
+
+};
+
+/* ---------- 主循环 ---------- */
+const clock = new THREE.Clock();
+let lastStep=0, kickSoundT=0, foundCount=0, awayTimer=0;
+const fwd=new THREE.Vector3(), right=new THREE.Vector3();
+
+function update(dt, t){
+  let ix=0, iz=0, run=false;
+  if (started){
+    if (keys.KeyW||keys.ArrowUp) iz+=1;
+    if (keys.KeyS||keys.ArrowDown) iz-=1;
+    if (keys.KeyA||keys.ArrowLeft) ix-=1;
+    if (keys.KeyD||keys.ArrowRight) ix+=1;
+    run = keys.ShiftLeft||keys.ShiftRight;
+    if (joy.id!==null){ ix+=joy.x; iz-=joy.y; if (Math.hypot(joy.x,joy.y)>.92) run=true; }
+  }
+  const il=Math.hypot(ix,iz); if (il>1){ ix/=il; iz/=il; }
+  const speed = run ? 6.2 : 3.1;
+  fwd.set(-Math.sin(player.yaw),0,-Math.cos(player.yaw));
+  right.set(Math.cos(player.yaw),0,-Math.sin(player.yaw));
+  let tx=(fwd.x*iz+right.x*ix)*speed, tz=(fwd.z*iz+right.z*ix)*speed;
+  if (started && auto.on){
+    if (joy.id!==null && Math.hypot(joy.x,joy.y)>.3) setAuto(false);
+    else {
+      let targetZ, lookYaw=0;
+      if (auto.next<N){ const s=signs[auto.next]; targetZ=s.z+2.6; }
+      else targetZ=-ROAD_LEN+2;
+      if (auto.state==='walk'){
+        const dz=targetZ-player.z, dx=0-player.x;
+        const v=Math.min(2.6, Math.max(.6, Math.abs(dz)*.9));
+        const len=Math.hypot(dx,dz)||1;
+        tx=dx/len*v; tz=dz/len*v;
+        if (Math.abs(dz)<.25){
+          tx=tz=0;
+          if (auto.next<N) arriveAt(auto.next);
+          else { auto.state='end'; }
+        }
+      } else { tx=0; tz=0; }
+      // 镜头：走路时看前方，停下时转向路牌，终点看文字
+      if (auto.state==='stop' && auto.next<N){
+        const s=signs[auto.next]; lookYaw=Math.atan2(-(s.x-player.x), -(s.z-player.z))*.75;
+        auto.wait-=dt;
+        $('autoCount').textContent = Player.on ? '正在听歌，听完点继续' : `${Math.max(0,Math.ceil(auto.wait))} 秒后自动继续`;
+        if (!Player.on && auto.wait<=0) continueWalk();
+      }
+      if (!locked && look.id===null){
+        let dy=lookYaw-player.yaw; dy=Math.atan2(Math.sin(dy),Math.cos(dy));
+        player.yaw+=dy*Math.min(1,dt*2.2);
+        player.pitch+=((auto.state==='end'?.12:0)-player.pitch)*Math.min(1,dt*2);
+      }
+    }
+  }
+  const a=1-Math.exp(-9*dt);
+  player.vx+=(tx-player.vx)*a; player.vz+=(tz-player.vz)*a;
+  player.x+=player.vx*dt; player.z+=player.vz*dt;
+  for (const c of colliders){
+    const dx=player.x-c.x, dz=player.z-c.z, rr=c.r+.3;
+    if (Math.abs(dz)>rr||Math.abs(dx)>rr) continue;
+    const d=Math.hypot(dx,dz);
+    if (d<rr && d>1e-4){ player.x=c.x+dx/d*rr; player.z=c.z+dz/d*rr; }
+  }
+  player.x=Math.max(-16,Math.min(16,player.x));
+  player.z=Math.max(-ROAD_LEN-6,Math.min(9,player.z));
+  const spd=Math.hypot(player.vx,player.vz);
+
+  if (spd>.4){
+    player.phase += dt*spd*2.1;
+    const step=Math.floor(player.phase/Math.PI);
+    if (step!==lastStep){ lastStep=step; rustle(run?.32:.22, false); }
+  }
+  const bob = Math.sin(player.phase*2)*.045*Math.min(1,spd/3);
+  camera.position.set(player.x, EYE+bob, player.z);
+  camera.rotation.set(player.pitch, player.yaw, Math.sin(player.phase)*.006*Math.min(1,spd/3));
+  sky.position.copy(camera.position);
+  sun.position.copy(camera.position).addScaledVector(sunDir,250);
+
+  // 地上落叶被踢散
+  const moving=spd>.6, kr=.65+spd*.12, kr2=kr*kr;
+  let changed=false, kicked=0;
+  for (let i=0;i<NG;i++){
+    const i3=i*3;
+    if (gState[i]===0){
+      if (!moving) continue;
+      const dz=gPos[i3+2]-player.z; if (dz>kr||dz<-kr) continue;
+      const dx=gPos[i3]-player.x; if (dx>kr||dx<-kr) continue;
+      const d2=dx*dx+dz*dz; if (d2>kr2) continue;
+      const d=Math.sqrt(d2)||.01, power=Math.min(1.6, spd/3.1);
+      gVel[i3]=dx/d*rand(.6,1.6)*power+player.vx*rand(.3,.7);
+      gVel[i3+2]=dz/d*rand(.6,1.6)*power+player.vz*rand(.3,.7);
+      gVel[i3+1]=rand(.9,2.2)*power+.4;
+      gAng[i3]=rand(-9,9); gAng[i3+1]=rand(-5,5); gAng[i3+2]=rand(-9,9);
+      gState[i]=1; kicked++;
+    }
+    const drag=1-Math.min(1,1.6*dt);
+    gVel[i3+1]-=4.2*dt; if (gVel[i3+1]<-.85) gVel[i3+1]=-.85;
+    gVel[i3]=gVel[i3]*drag+Math.sin(t*4+i)*.8*dt; gVel[i3+2]=gVel[i3+2]*drag+Math.cos(t*3.3+i)*.8*dt;
+    gPos[i3]+=gVel[i3]*dt; gPos[i3+1]+=gVel[i3+1]*dt; gPos[i3+2]+=gVel[i3+2]*dt;
+    gRot[i3]+=gAng[i3]*dt; gRot[i3+1]+=gAng[i3+1]*dt; gRot[i3+2]+=gAng[i3+2]*dt;
+    if (gPos[i3+1]<=gRest[i] && gVel[i3+1]<0){
+      gPos[i3+1]=gRest[i]; gState[i]=0; gRot[i3]=rand(-.15,.15); gRot[i3+2]=rand(-.15,.15);
+    }
+    setLeaf(groundLeaves,gPos,gRot,gScl,i); changed=true;
+  }
+  if (changed) groundLeaves.instanceMatrix.needsUpdate=true;
+  if (kicked>0 && t-kickSoundT>.09){ kickSoundT=t; rustle(Math.min(.45,.12+kicked*.03), true); }
+
+  // 飘落的叶子
+  for (let i=0;i<NF;i++){
+    const i3=i*3, i4=i*4;
+    const fs=fPar[i4], ph=fPar[i4+1], fr=fPar[i4+2], amp=fPar[i4+3];
+    fPos[i3+1]-=fs*dt;
+    fPos[i3]+=Math.sin(t*fr+ph)*amp*dt+.25*dt;
+    fPos[i3+2]+=Math.cos(t*fr*.8+ph)*amp*.6*dt;
+    fRot[i3]=Math.sin(t*fr+ph)*1.1; fRot[i3+1]=t*.6*fr+ph; fRot[i3+2]=Math.cos(t*fr*1.2+ph)*.9;
+    const dx=fPos[i3]-player.x, dz=fPos[i3+2]-player.z;
+    if (fPos[i3+1]<.03 || dx*dx+dz*dz>34*34) respawnFall(i,player.x,player.z, fPos[i3+1]>=.03);
+    setLeaf(fallLeaves,fPos,fRot,fScl,i);
+  }
+  fallLeaves.instanceMatrix.needsUpdate=true;
+
+  // 浮尘
+  for (let i=0;i<ND;i++){
+    const i3=i*3;
+    dPos[i3]+=Math.sin(t*.3+i)*.05*dt; dPos[i3+1]+=Math.sin(t*.5+i*1.7)*.04*dt; dPos[i3+2]+=Math.cos(t*.27+i)*.05*dt;
+    if (dPos[i3]-player.x>14) dPos[i3]-=28; else if (dPos[i3]-player.x<-14) dPos[i3]+=28;
+    if (dPos[i3+2]-player.z>14) dPos[i3+2]-=28; else if (dPos[i3+2]-player.z<-14) dPos[i3+2]+=28;
+  }
+  dustGeo.attributes.position.needsUpdate=true;
+
+  // 路牌
+  let near=-1, nd=5.5;
+  for (let i=0;i<N;i++){
+    const s=signs[i], d=Math.hypot(player.x-s.x, player.z-s.z);
+    s.glow.material.opacity = s.visited ? .32 : .5+.45*Math.sin(t*3+i);
+    s.glow.position.y = 3.05+Math.sin(t*2+i)*.08;
+    if (d<nd){ nd=d; near=i; }
+  }
+  activeSign=near;
+  if (!auto.on && near>=0){
+    const s=signs[near];
+    if (!s.visited){
+      s.visited=true; foundCount++; dots[near].classList.add('on'); $('found').textContent=foundCount; chime();
+      toast(foundCount===N ? '🎉 十二个月都找到了' : `✨ 记忆路牌 ${String(near+1).padStart(2,'0')} · ${MONTHS[near].title.split('·')[1]||''}`);
+    }
+    if (shownSign!==near) showCard(near);
+  } else if (!auto.on && shownSign>=0) hideCard();
+
+  // 走远了就停音乐
+  if (Player.on && Player.idx>=0){
+    const s=signs[Player.idx];
+    if (Math.hypot(player.x-s.x, player.z-s.z) > 15){
+      awayTimer+=dt;
+      if (awayTimer>1.0){ awayTimer=0; Player.stop(); updateMusicUI(); toast('走远了，音乐已停'); }
+    } else awayTimer=0;
+  }
+
+  // 最后数米，散开的金叶汇聚成祝福文字
+  const endDistance=Math.max(0,Math.min(1,(Math.abs(player.z+ROAD_LEN-9)-30)/30));
+  const assemble=1-endDistance;
+  finaleGroup.position.set(0,0,-ROAD_LEN-12);
+  finaleGroup.scale.setScalar(.72);
+  finaleGroup.rotation.y=0;
+  finaleCaption.classList.toggle('show',player.z < -ROAD_LEN+14);
+  if (player.z < -ROAD_LEN+14 && !window.__finaleToast){ window.__finaleToast=true; toast('走到尽头了，抬头看看'); chime(); }
+  for(let i=0;i<finaleCount;i++){
+    const i3=i*3, a=assemble;
+    const driftX=Math.sin(t*.7+finalePhase[i])*5*(1-a), driftY=Math.cos(t*.9+finalePhase[i])*2*(1-a);
+    finalePos[i3]+=(finaleTarget[i3]+driftX-finalePos[i3])*(.02+a*.10);
+    finalePos[i3+1]+=(finaleTarget[i3+1]+driftY-finalePos[i3+1])*(.02+a*.10);
+    finalePos[i3+2]+=(finaleTarget[i3+2]-finalePos[i3+2])*(.02+a*.10);
+    finaleRot[i3]+=(Math.sin(t+finalePhase[i])*(1-a))*dt;
+    finaleRot[i3+1]+=dt*(.25+a*.03);
+    finaleRot[i3+2]+=(Math.cos(t+finalePhase[i])*(1-a))*dt;
+    setLeaf(finaleMesh,finalePos,finaleRot,finaleScale,i);
+  }
+  finaleMesh.instanceMatrix.needsUpdate=true;
+
+  const prog=Math.max(0,Math.min(1,(6-player.z)/(6+ROAD_LEN)));
+  $('fill').style.width=(prog*100)+'%';
+  $('meters').textContent=Math.max(0,Math.round(6-player.z));
+}
+
+function loop(){
+  const dt=Math.min(clock.getDelta(), .05), t=clock.elapsedTime;
+  if (!started){ player.yaw = Math.sin(t*.15)*.25; }
+  update(dt, t);
+  renderer.render(scene, camera);
+  requestAnimationFrame(loop);
+}
+addEventListener('resize', ()=>{
+  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight);
+});
+updateMusicUI();
+loop();
+</script>
+</body>
+</html>
