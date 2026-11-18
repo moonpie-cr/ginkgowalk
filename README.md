@@ -4,7 +4,8 @@
 
 整个作品只有一个文件：`ginkgo-walk.html`。
 
----
+<img width="1915" height="985" alt="image" src="https://github.com/user-attachments/assets/f29db35f-a3c9-4b7f-b059-568adf30f712" />
+
 
 ## ✨ 主要特点
 
