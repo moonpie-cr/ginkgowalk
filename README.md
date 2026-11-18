@@ -2,7 +2,7 @@
 
 一个第一人称 3D 互动网页。沿着一条金黄的银杏大道慢慢往前走，脚下的落叶会被踩起来，耳边是沙沙声和风声。路边立着 12 块「记忆路牌」，每块对应一年中的一个月，走到跟前会停下，弹出这个月的记忆卡片，还可以听一段当月的旋律。走到大道尽头，漫天落叶会聚成四个字：**渐入佳境**。
 
-整个作品只有一个文件：`ginkgo-walk.html`。
+网址：https://moonpie-cr.github.io/ginkgowalk/
 
 <img width="1915" height="985" alt="image" src="https://github.com/user-attachments/assets/f29db35f-a3c9-4b7f-b059-568adf30f712" />
 
